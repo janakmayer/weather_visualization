@@ -7,13 +7,17 @@ def ghcn_daily_to_df(station_id):
     """
     :param station_id: Weather Station ID - see ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt for full list
     :return: pandas dataframe with these variables:
-                    TMAX: Daily maximum temperature
+                    TMAX: Daily maximum temperature (deg F)
                     TMIN: Daily minimum temperature for the day
-                    PRCP: Daily precipitation
+                    PRCP: Daily precipitation (inches)
                     RHIGH: Record maximum temperature for that day of the year
                     RLOW: Record minimum temperature for that day of the year
                     NHIGH: Mean maximum temperature for that day of the year
                     NLOW: Mean minimum temperature for that day of the year
+                    CUMPRCP: Cumulative precipitation by month
+                    MONTHPRCP: Total precipitation for the month (ie the final value for the month from CUMPRCP)
+                    MEANPRCP: Average precipitation for the month (over all years)
+
 
 
     Data is obtained from NOAA's FTP data server: ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily/all
