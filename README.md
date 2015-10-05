@@ -4,7 +4,7 @@
 
 ###Original Visualization###
 
-This is a favorite of Edward Tufte. In *The Visual Display of Quantitative Information*, he cites it as an exemplare of
+This is a favorite of Edward Tufte. In *The Visual Display of Quantitative Information*, he cites it as an exemplar of
 high-data-density visualization, quoting a density of "better than 300 numbers per square inch"
 
 ![Image of New York Weather Visualization](http://www.edwardtufte.com/bboard/images/00014g-836.jpg)

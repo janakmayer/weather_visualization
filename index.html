@@ -45,9 +45,9 @@
         stroke-width: 2px;
     }
 
-    .precip_avg {
+    .precip_mean {
         fill: none;
-        stroke: #4d8fc6;
+        stroke: #56a0de;
         stroke-width: 1px;
     }
 
@@ -92,7 +92,7 @@
     other calculated metrics differ from the original since they are calculated on all years from start of observations
     in 1876 until 2015, rather than the reduced set used for the original in 2003.
     Code for the visualization (including a Python script to download, clean and reformat the data and calculate the
-    various metrics) can be found <a href="">on GitHub</a>.</p>
+    various metrics) can be found <a href="https://github.com/janakmayer/weather_visualization">on GitHub</a>.</p>
 <p/>
 <p>
     This is an initial effort only. Subsequent iterations will clean up the code base, using Mike Bostock's
@@ -317,9 +317,13 @@ d3.csv("NY2003Weather.csv", function(error, data) {
                 .range([x_origin, x_extent]);
 
 
-            var line = d3.svg.line()
+            var cum_precip_line = d3.svg.line()
                 .x(function(d) { return sm_xScale(d.date); })
                 .y(function(d) { return sm_yScale(d.cumprcp); });
+
+            var mean_precip_line = d3.svg.line()
+                .x(function(d) { return sm_xScale(d.date); })
+                .y(function(d) { return sm_yScale(d.meanprcp); });
 
             var area = d3.svg.area()
                 .x(function(d) { return sm_xScale(d.date); })
@@ -335,8 +339,14 @@ d3.csv("NY2003Weather.csv", function(error, data) {
             d3.select(this)
                 .append("path")
                 .datum(nested[i].values)
+                .attr("class", "precip_mean")
+                .attr("d", mean_precip_line);
+
+            d3.select(this)
+                .append("path")
+                .datum(nested[i].values)
                 .attr("class", "precip_line")
-                .attr("d", line);
+                .attr("d", cum_precip_line);
         });
 
 
