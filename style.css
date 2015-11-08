@@ -1,0 +1,76 @@
+body {
+    font: 14px sans-serif;
+}
+
+.background {
+    fill: none;
+}
+
+.axis {
+    font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.x.axis path {
+    display: none;
+}
+
+.max_min {
+    fill: #3a0047;
+}
+
+.record_range {
+    fill: #b8b17a;
+    opacity: 0.75;
+
+}
+
+.norm_range {
+    fill: #756e47;
+    opacity: 0.5;
+
+}
+
+.precip_line {
+    fill: none;
+    stroke: #2a5c75;
+    stroke-width: 2px;
+}
+
+.precip_mean {
+    fill: none;
+    stroke: #56a0de;
+    stroke-width: 1px;
+}
+
+.precip_area {
+    fill: #b8b17a;
+    opacity: 0.5;
+}
+
+.vertGrid {
+    fill: none;
+    shape-rendering: crispEdges;
+    stroke: black;
+    stroke-dasharray: 1, 2;
+    stroke-width: 1px;
+}
+
+.caption {
+    fill: black;
+    font: 10px sans-serif;
+}
+
+.scrubMarker {
+    fill: #ffffff;
+}
+
+.scrubcircleSM {
+    fill: #2a5c75;
+}
