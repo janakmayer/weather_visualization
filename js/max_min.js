@@ -6,7 +6,7 @@ function MaxMinChart(){
         markerWidth = 15, markerHeight = 1.5;
 
     var monthNameFormat = d3.time.format('%B');
-    var datePrintFormat = d3.time.format('%B %d, %Y');
+    var datePrintFormat = d3.time.format('%b %d, %Y');
 
     var chartdata;
 
@@ -48,24 +48,6 @@ function MaxMinChart(){
 
             // Otherwise, create the skeletal chart.
             var gEnter = svg.enter().append("svg").append("g");
-            gEnter.append("g")
-                .attr({
-                    "class": "x axis",
-                    "transform": "translate(" + xScale.range()[1] / 24 + "," + -20 + ")"
-                })
-                .call(xAxis);
-
-            gEnter.append("g")
-                .attr("class", "y axis")
-                .call(yAxis)
-                .append("text")
-                .attr({
-                    "transform": "rotate(-90)",
-                    "y": 6,
-                    "dy": ".71em",
-                    "text-anchor": "end"
-                })
-                .text("Temperature (Deg F)");
 
             // Update the outer dimensions.
             svg .attr("width", width + margin.left + margin.right)
@@ -184,6 +166,27 @@ function MaxMinChart(){
                 .on("mouseover", mouseover)
                 .on("mousemove", mousemove)
                 .on("mouseout", mouseout);
+
+            gEnter.append("g")
+                .attr({
+                    "class": "x axis",
+                    "transform": "translate(" + xScale.range()[1] / 24 + "," + -20 + ")"
+                })
+                .call(xAxis);
+
+            gEnter.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+                .append("text")
+                .attr({
+                    "transform": "rotate(-90)",
+                    "y": 6,
+                    "dy": ".71em",
+                    "text-anchor": "end"
+                })
+                .text("Temperature (Deg F)");
+
+
         });
 
     }

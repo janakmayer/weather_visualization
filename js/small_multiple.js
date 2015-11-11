@@ -5,7 +5,7 @@ function SmallMultiples() {
         height = 150;
 
     var monthNameFormat = d3.time.format('%B');
-    var datePrintFormat = d3.time.format('%B %d, %Y');
+    var datePrintFormat = d3.time.format('%b %d, %Y');
 
     var chartdata;
 
@@ -205,7 +205,7 @@ function SmallMultiples() {
         d3.select("#value-caption")
             .attr("x", x)
             .attr("y", y)
-            .text("Cum. Precip.: "+Math.round(cumPrecip*10)/10 + " in");
+            .text(Math.round(cumPrecip*10)/10 + " in");
 
         d3.select("#date-caption").attr("x", x)
             .text(formattedDate);
