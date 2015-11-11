@@ -90,6 +90,23 @@ def ghcn_daily_to_df(station_id):
     df = df[df['ELEMENT'].isin(['TMAX', 'TMIN', 'PRCP'])]
     df = df.pivot_table(index=['ID', 'YEAR', 'MONTH', 'DAY'], columns='ELEMENT', values='VALUE').reset_index()
 
+    df['PRCP'].fillna(0, inplace=True)  # if precipitation is missing, fill with 0
+
+
+    # Combine Year, Month and Day into a date field
+    df['DATE'] = pd.to_datetime(df['YEAR']*10000+df['MONTH']*100+df['DAY'], format='%Y%m%d')
+
+    # reindex, padding with forward fill to make sure we fill all gaps
+    # ie 1938 is missing some days, and a few others, and the gaps will cause problems for our visualization
+    df.index = df['DATE']
+    idx = pd.date_range(df.index[0],df.index[-1])
+    df = df.reindex(idx, method='ffill')
+    df['MONTH'] = df.index.month
+    df['DAY'] = df.index.day
+    df['DATE'] = df.index
+
+    df = df[df['YEAR'] < 2015]  # include only years before 2015 in the calculations and dataset
+
     # Units conversion
     df['PRCP'] *= 0.00393701  # Convert precipitation from 10ths of a mm to inches
     df['TMAX'] = df['TMAX'] * (9.0/50) + 32  # Convert from 10ths of a degree C to degrees F
@@ -100,12 +117,22 @@ def ghcn_daily_to_df(station_id):
     df['NHIGH'] = df.groupby(by=['MONTH', 'DAY']).transform(np.mean)['TMAX']
     df['RLOW'] = df.groupby(by=['MONTH', 'DAY']).transform(np.min)['TMIN']
     df['NLOW'] = df.groupby(by=['MONTH', 'DAY']).transform(np.mean)['TMIN']
+
+    # Data cleaning - If max is higher than min, swap the values around
+    df['TEMP_MAX'] = df['TMAX']
+    df.loc[df['TEMP_MAX'] < df['TMIN'], 'TMAX'] = df.loc[df['TEMP_MAX'] < df['TMIN'], 'TMIN']
+    df.loc[df['TEMP_MAX'] < df['TMIN'], 'TMIN'] = df.loc[df['TEMP_MAX'] < df['TMIN'], 'TEMP_MAX']
+
+    df['TMAX'].fillna(df['NHIGH'], inplace=True)  # If max or min are missing, fill with the average high/low
+    df['TMIN'].fillna(df.loc[:, ['NLOW', 'TMAX']].min(axis=1), inplace=True)  # Or the Max if the average low is higher
+
+    #Precipitation calcs:
     df['CUMPRCP'] = df.groupby(by=['YEAR', 'MONTH']).cumsum()['PRCP']
     df['MONTHPRCP'] = df.groupby(by=['YEAR', 'MONTH']).transform(max)['CUMPRCP']
     df['MEANPRCP'] = df.groupby(by=['MONTH']).transform(np.mean)['MONTHPRCP']
+    df['MAXCUMPRCP'] = np.max(df['CUMPRCP'])
 
-    # Combine Year, Month and Day into a date field
-    df['DATE'] = pd.to_datetime(df['YEAR']*10000+df['MONTH']*100+df['DAY'], format='%Y%m%d')
+
 
     # Make all column headers lower case
     df.columns = [str(x).lower() for x in df.columns]
@@ -116,5 +143,4 @@ def ghcn_daily_to_df(station_id):
 if __name__ == '__main__':
     # USW00094728 is the New York Central Park Belvedere Castle National Weather Service Observatory
     data = ghcn_daily_to_df('USW00094728')
-    # Select just the 2003 data and output to CSV
-    data[data['year'] == 2003].to_csv('NY2003Weather.csv')
+    data.to_csv('NYCWeather.csv')

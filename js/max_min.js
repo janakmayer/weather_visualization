@@ -1,14 +1,14 @@
 function MaxMinChart(){
 
-    var margin = {top: 40, right: 40, bottom: 25, left: 50},
-        width = 1000 - margin.left - margin.right,
+    var margin = {top: 40, right: 25, bottom: 25, left: 25},
+        width = 940 - margin.left - margin.right,
         height = 300 - margin.top - margin.bottom,
         markerWidth = 15, markerHeight = 1.5;
 
     var monthNameFormat = d3.time.format('%B');
-    var datePrintFormat = d3.time.format('%B %d');
+    var datePrintFormat = d3.time.format('%B %d, %Y');
 
-    var topMarker, bottomMarker, topCaption, bottomCaption, datetext, chartdata;
+    var chartdata;
 
     var xScale = d3.time.scale()
         .range([0, width]);
@@ -42,36 +42,49 @@ function MaxMinChart(){
             yScale.domain([d3.min(data, function(d) { return d.rlow; }),d3.max(data, function(d) { return d.rhigh; })]);
 
 
-            var div = d3.select(this)
-                .selectAll(".chart")
-                .data([data]);
 
-            div.enter()
-                .append("div")
-                .attr("class", "chart")
-                .append("svg")
-                .append("g");
+            // Select the svg element, if it exists.
+            var svg = d3.select(this).selectAll("svg").data([data]);
 
-            var svg = div.select("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom);
-
-            var g = svg.select("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-            g.append("g")
+            // Otherwise, create the skeletal chart.
+            var gEnter = svg.enter().append("svg").append("g");
+            gEnter.append("g")
                 .attr({
                     "class": "x axis",
                     "transform": "translate(" + xScale.range()[1] / 24 + "," + -20 + ")"
                 })
                 .call(xAxis);
 
+            gEnter.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+                .append("text")
+                .attr({
+                    "transform": "rotate(-90)",
+                    "y": 6,
+                    "dy": ".71em",
+                    "text-anchor": "end"
+                })
+                .text("Temperature (Deg F)");
+
+            // Update the outer dimensions.
+            svg .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+
+            // Update the inner dimensions.
+            var g = svg.select("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
             g.selectAll(".record_range")
                 .data(data)
                 .enter()
                 .append("rect")
+                .attr("class", "record_range");
+
+            g.selectAll(".record_range")
+
                 .attr({
-                    "class": "record_range",
                     "x": function (d) { return xScale(d.date); },
                     "width": width / data.length,
                     "y": function (d) { return yScale(d.rhigh); },
@@ -82,8 +95,10 @@ function MaxMinChart(){
                 .data(data)
                 .enter()
                 .append("rect")
+                .attr("class", "norm_range");
+
+            g.selectAll(".norm_range")
                 .attr({
-                    "class": "norm_range",
                     "x": function (d) { return xScale(d.date); },
                     "width": width / data.length,
                     "y": function (d) { return yScale(d.nhigh); },
@@ -94,65 +109,67 @@ function MaxMinChart(){
                 .data(data)
                 .enter()
                 .append("rect")
+                .attr("class", "max_min");
+
+            g.selectAll(".max_min")
+                //.transition()
+                //.duration(200)
                 .attr({
-                    "class": "max_min",
                     "x": function (d) { return xScale(d.date); },
                     "width": width / data.length,
                     "y": function (d) { return yScale(d.tmax); },
-                    "height": function (d) { return yScale(d.tmin) - yScale(d.tmax); }
+                    "height": function (d) {
+                        if (d.tmin==null || d.tmax==null){
+                                console.log(d);
+                            }
+                        return yScale(d.tmin) - yScale(d.tmax); }
                 });
 
-            topMarker = g.append("rect")  // the circle for the scrub value
+            g.append("rect")  // the top marker for the scrub value
                 .attr("width", markerWidth)
                 .attr("height", markerHeight)
+                .attr("id", "topMarker")
                 .attr("class", "scrubMarker")
                 .attr("opacity", 0) // invisible until mouseover
                 .style("pointer-events", "none");
 
-            bottomMarker = g.append("rect")  // the circle for the scrub value
+            g.append("rect")  // the bottom marker for the scrub value
                 .attr("width", markerWidth)
                 .attr("height", markerHeight)
+                .attr("id", "bottomMarker")
                 .attr("class", "scrubMarker")
                 .attr("opacity", 0) // invisible until mouseover
                 .style("pointer-events", "none");
 
-            topCaption = g.append("text")  // the scrub text for the value - blank at this point
+            g.append("text")  // the scrub text for the value - blank at this point
                 .attr("class", "caption")
+                .attr("id", "topCaption")
                 .attr("text-anchor", "middle")
                 .style("pointer-events", "none")
-                .attr("dy", -8);
+                .attr("dy", -15);
 
-            bottomCaption = g.append("text")  // the scrub text for the value - blank at this point
+            g.append("text")  // the scrub text for the value - blank at this point
                 .attr("class", "caption")
+                .attr("id", "bottomCaption")
                 .attr("text-anchor", "middle")
                 .style("pointer-events", "none")
-                .attr("dy", -8);
+                .attr("dy", +30);
 
-            datetext = g.append("text")  // the scrub text for the date - blank at this point
+            g.append("text")  // the scrub text for the date - blank at this point
                 .attr("class", "caption")
+                .attr("id", "datetext")
                 .attr("text-anchor", "middle")
                 .style("pointer-events", "none")
                 .attr("dy", height + margin.bottom - 5);
 
-            g.append("g")
-                .attr("class", "y axis")
-                .call(yAxis)
-                .append("text")
-                .attr({
-                    "transform": "rotate(-90)",
-                    "y": 6,
-                    "dy": ".71em",
-                    "text-anchor": "end"
-                })
-                .style()
-                .text("Temperature (Deg F)");
 
             g.selectAll(".vertGrid")
                 .data(xScale.ticks())
                 .enter()
                 .append("line")
+                .attr("class", "vertGrid");
+            g.selectAll(".vertGrid")
                 .attr({
-                    "class":"vertGrid",
                     "x1" : function(d){ return xScale(d) },
                     "x2" : function(d){ return xScale(d) },
                     "y1" : 0,
@@ -172,8 +189,8 @@ function MaxMinChart(){
     }
 
     function mouseover(){
-        topMarker.attr("opacity", 1.0);  // make the scrub circle visible
-        bottomMarker.attr("opacity", 1.0);  // make the scrub circle visible
+        d3.select("#topMarker").attr("opacity", 1.0);  // make the scrub circle visible
+        d3.select("#bottomMarker").attr("opacity", 1.0);  // make the scrub circle visible
         mousemove.call(this);
     }
 
@@ -190,33 +207,33 @@ function MaxMinChart(){
         var formattedDate = datePrintFormat(chartdata[index].date);
         var tmax = chartdata[index].tmax;
         var tmin = chartdata[index].tmin;
-        var rhigh = chartdata[index].rhigh;
-        var rlow = chartdata[index].rlow;
-        topMarker.attr("x", x - markerWidth/2)
+        var nhigh = Math.max(chartdata[index].nhigh+10, tmax);
+        var nlow = Math.min(chartdata[index].nlow-10, tmin);
+        d3.select("#topMarker").attr("x", x - markerWidth/2)
             .attr("y", yScale(tmax));
-        bottomMarker.attr("x", x - markerWidth/2)
+        d3.select("#bottomMarker").attr("x", x - markerWidth/2)
             .attr("y", yScale(tmin));
 
-        topCaption.attr("x", x)
-            .attr("y", yScale(rhigh))
-            .text(Math.round(tmax*10)/10 + "\xB0F");
+        d3.select("#topCaption").attr("x", x)
+            .attr("y", yScale(nhigh))
+            .text("High: " + Math.round(tmax*10)/10 + "\xB0F");
 
-        bottomCaption.attr("x", x)
-            .attr("y", yScale(rlow) + 25)
-            .text(Math.round(tmin*10)/10 + "\xB0F");
+        d3.select("#bottomCaption").attr("x", x)
+            .attr("y", yScale(nlow))
+            .text("Low: " + Math.round(tmin*10)/10 + "\xB0F");
 
-        datetext.attr("x", x)
+        d3.select("#datetext").attr("x", x)
             .text(formattedDate);
     }
 
     function mouseout() {
-        topMarker.attr("opacity", 0);  // make the scrub circle invisible again
-        bottomMarker.attr("opacity", 0);  // make the scrub circle invisible again
+        d3.select("#topMarker").attr("opacity", 0);  // make the scrub circle invisible again
+        d3.select("#bottomMarker").attr("opacity", 0);  // make the scrub circle invisible again
 
-        topCaption.text(""); // delete scrub value and year text
-        bottomCaption.text("");
+        d3.select("#topCaption").text(""); // delete scrub value and year text
+        d3.select("#bottomCaption").text("");
 
-        datetext.text("");
+        d3.select("#datetext").text("");
     }
 
     return chart;

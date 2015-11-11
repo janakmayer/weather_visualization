@@ -63,7 +63,7 @@ body {
 }
 
 .caption {
-    fill: black;
+    fill: #000;
     font: 10px sans-serif;
 }
 
@@ -71,6 +71,16 @@ body {
     fill: #ffffff;
 }
 
-.scrubcircleSM {
+.scrubcircle {
     fill: #2a5c75;
+}
+
+.spacer {
+    min-height: 40px;
+}
+
+
+.btn:focus,.btn:active:focus,.btn.active:focus,
+.btn.focus,.btn:active.focus,.btn.active.focus {
+    outline: none;
 }

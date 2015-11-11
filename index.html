@@ -1,16 +1,82 @@
 <!DOCTYPE html>
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/d3.slider.css">
+
+    <!-- Bootstrap: Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+
 </head>
 <body>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>Visualizing New York City Weather: 1876 to 2014</h2>
+                <p>This visualization, created in D3.js, using NOAA weather data, is an updated, interactive version
+                    of this <a href="http://www.edwardtufte.com/bboard/images/00014g-836.jpg">print-based classic
+                        visualization of 2003 NYC weather data</a> by the New York Times.
+                </p>
+                <p>The visualization shows temperature and precipitation data collected by the New York Central Park
+                    Belvedere Castle National Weather Service Observatory,
+                    <a href="ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily/all/USW00094728.dly"> obtained from NOAA's FTP
+                        service</a>. Any year back to the start of collection in 1876 can be visualized.
+                </p>
+                <p>Full source code for the visualization (including a Python script to download, clean and reformat the
+                    data and calculate the various metrics) can be found
+                    <a href="https://github.com/janakmayer/weather_visualization">on GitHub</a>.
+                </p>
+                <br>
+                <br>
+                <p>Slide the slider or click the year forward/back buttons to select a different year to display,
+                    and mouseover the visualization to read temperature max/min and cumulative preciptation details
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <h3>New York City Weather in <span id="sliderText"></span></h3>
+            </div>
+            <div class="col-xs-3">
+                <div class="btn-group" role="group">
+                    <button id="previousYear" type="button" class="btn btn-default">Previous Year</button>
+                    <button id="nextYear" type="button" class="btn btn-default">Next Year</button>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div id="yearSlider"></div>
+            </div>
 
-<div id="maxmin_viz"></div>
-<div id="cumprecip_viz"></div>
+        </div>
+        <div class="row spacer">
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <p><strong>Temperature:</strong> Purple bars represent the range between the daily high and low. Beige
+                    bars show the average and record highs and lows for that day of the year across all years
+                    (1876 to 2014).
+                </p>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
-<script src="small_multiple.js"></script>
-<script src="max_min.js"></script>
-<script src="weatherviz.js"></script>
+                <div id="maxmin_viz"></div>
+
+                <p><strong>Precipitation:</strong> Cumulative monthly precipitation compared to average monthly
+                    precipitation across all years (1876 to 2014).
+                </p>
+
+                <div id="cumprecip_viz"></div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+    <script src="js/d3.slider.js"></script>
+    <script src="js/small_multiple.js"></script>
+    <script src="js/max_min.js"></script>
+    <script src="js/weatherviz.js"></script>
 </body>
