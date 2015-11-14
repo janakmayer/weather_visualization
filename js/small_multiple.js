@@ -75,7 +75,17 @@ function SmallMultiples() {
 
             var g = svg.select("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
+            g.selectAll(".smallMultiples")
+                .data(nested)
+                .enter()
+                .append("line")
+                .attr({
+                    "class": "vertGrid",
+                    "x1": function (d) { return xScale(d.values[0].date) },
+                    "x2": function (d) { return xScale(d.values[0].date) },
+                    "y1": 0,
+                    "y2": height
+                });
             g.selectAll(".smallMultiples")
                 .data(nested)
                 .enter()
@@ -111,17 +121,7 @@ function SmallMultiples() {
                         .attr("dy", 0);
                 });
 
-            g.selectAll(".smallMultiples")
-                .data(nested)
-                .enter()
-                .append("line")
-                .attr({
-                    "class": "vertGrid",
-                    "x1": function (d) { return xScale(d.values[0].date) },
-                    "x2": function (d) { return xScale(d.values[0].date) },
-                    "y1": 0,
-                    "y2": height
-                });
+
 
 
             g.selectAll(".smallMultiples")

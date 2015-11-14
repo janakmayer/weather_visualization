@@ -72,15 +72,18 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         d3.select("#previousYear")
             .on("click", function() {
-                Year -= 1;
-                slider.value(Year);
+                if (slider.value()>slider.min()){
+                    Year -= 1;
+                    slider.value(Year);
+                }
             });
 
         d3.select("#nextYear")
             .on("click", function() {
-                Year += 1;
-                slider.value(Year);
+                if (slider.value()<slider.max()){
+                    Year += 1;
+                    slider.value(Year);
+                }
             });
-
     });
 });
